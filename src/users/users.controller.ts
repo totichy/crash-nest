@@ -15,7 +15,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  findAll(@Query('role') role?: 'INTERN' | 'ENGENEER' | 'ADMIN') {
+  findAll(@Query('role') role?: 'INTERN' | 'ENGINEER' | 'ADMIN') {
     return this.usersService.findAll(role);
   }
 
@@ -30,7 +30,7 @@ export class UsersController {
     user: {
       name: string;
       email: string;
-      role: 'INTERN' | 'ENGENEER' | 'ADMIN';
+      role: 'INTERN' | 'ENGINEER' | 'ADMIN';
     },
   ) {
     return this.usersService.create(user);
@@ -43,7 +43,7 @@ export class UsersController {
     user: {
       name?: string;
       email?: string;
-      role?: 'INTERN' | 'ENGENEER' | 'ADMIN';
+      role?: 'INTERN' | 'ENGINEER' | 'ADMIN';
     },
   ) {
     return this.usersService.update(+id, user);

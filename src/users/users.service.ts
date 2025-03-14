@@ -19,11 +19,11 @@ export class UsersService {
       id: 3,
       name: 'Ondra',
       email: 'omichalek@data.cz',
-      role: 'ENGENNER',
+      role: 'ENGINEER',
     },
   ];
 
-  findAll(role?: 'INTERN' | 'ENGENEER' | 'ADMIN') {
+  findAll(role?: 'INTERN' | 'ENGINEER' | 'ADMIN') {
     if (role)
       return this.users
         .filter((user) => user.role === role)
@@ -39,14 +39,14 @@ export class UsersService {
   create(user: {
     name: string;
     email: string;
-    role: 'INTERN' | 'ENGENEER' | 'ADMIN';
+    role: 'INTERN' | 'ENGINEER' | 'ADMIN';
   }) {
-    const newUserID = this.users.sort((a, b) => b.id - a.id);
-    const newUser = {
-      id: newUserID[0].id + 1,
-      ...user,
-    };
-    console.log(newUser);
+    console.log(this.users);
+    const newUserID = [...this.users].sort((a, b) => b.id - a.id);
+    console.log(newUserID[0].id);
+    const newId = newUserID.length ? newUserID[0].id + 1 : 1;
+    const newUser = { id: newId, ...user };
+
     this.users.push(newUser);
     return newUser;
   }
@@ -56,14 +56,12 @@ export class UsersService {
     updatedUser: {
       name?: string;
       email?: string;
-      role?: 'INTERN' | 'ENGENEER' | 'ADMIN';
+      role?: 'INTERN' | 'ENGINEER' | 'ADMIN';
     },
   ) {
     this.users = this.users.map((user) =>
       user.id === id ? { ...user, ...updatedUser } : user,
     );
-
-    console.log(this.users);
 
     return this.findOne(id);
   }
