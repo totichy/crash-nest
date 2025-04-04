@@ -1,10 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
+import { UserRole } from './enums/user-role.enum';
+import { NotFoundException } from '@nestjs/common';
 
 describe('UsersController (Integration Test)', () => {
   let controller: UsersController;
-  let service: UsersService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -13,12 +14,10 @@ describe('UsersController (Integration Test)', () => {
     }).compile();
 
     controller = module.get<UsersController>(UsersController);
-    service = module.get<UsersService>(UsersService);
   });
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
-    expect(service).toBeDefined();
   });
 
   describe('findAll', () => {
@@ -38,14 +37,13 @@ describe('UsersController (Integration Test)', () => {
 
   describe('findOne', () => {
     it('should return a user by ID', () => {
-      const user = controller.findOne('1');
+      const user = controller.findOne(1);
       expect(user).toBeDefined();
       expect(user?.id).toBe(1);
     });
 
-    it('should return undefined for non-existing user', () => {
-      const user = controller.findOne('99');
-      expect(user).toBeUndefined();
+    it('should throw NotFoundException for non-existing user', () => {
+      expect(() => controller.findOne(99)).toThrow(NotFoundException);
     });
   });
 
@@ -54,7 +52,7 @@ describe('UsersController (Integration Test)', () => {
       const newUser = controller.create({
         name: 'Alice',
         email: 'alice@data.cz',
-        role: 'ADMIN',
+        role: UserRole.ADMIN,
       });
 
       expect(newUser).toBeDefined();
@@ -68,20 +66,21 @@ describe('UsersController (Integration Test)', () => {
 
   describe('update', () => {
     it('should update an existing user', () => {
-      const updatedUser = controller.update('1', { name: 'Tomáš' });
+      const updatedUser = controller.update(1, { name: 'Tomáš' });
       expect(updatedUser).toBeDefined();
       expect(updatedUser?.name).toBe('Tomáš');
     });
 
-    it('should not update a non-existing user', () => {
-      const updatedUser = controller.update('99', { name: 'Ghost' });
-      expect(updatedUser).toBeUndefined();
+    it('should throw NotFoundException for non-existing user', () => {
+      expect(() => controller.update(99, { name: 'Ghost' })).toThrow(
+        NotFoundException,
+      );
     });
   });
 
   describe('delete', () => {
     it('should delete a user', () => {
-      const deletedUser = controller.delete('1');
+      const deletedUser = controller.delete(1);
       expect(deletedUser).toBeDefined();
       expect(deletedUser?.id).toBe(1);
 
@@ -89,9 +88,8 @@ describe('UsersController (Integration Test)', () => {
       expect(controller.findAll()).toHaveLength(2);
     });
 
-    it('should return undefined if deleting non-existing user', () => {
-      const deletedUser = controller.delete('99');
-      expect(deletedUser).toBeUndefined();
+    it('should throw NotFoundException for non-existing user', () => {
+      expect(() => controller.delete(99)).toThrow(NotFoundException);
     });
   });
 });
