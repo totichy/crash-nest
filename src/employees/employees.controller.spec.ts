@@ -57,7 +57,7 @@ describe('EmployeesController', () => {
 
   describe('findAll', () => {
     it('should return all employees', async () => {
-      const result = await controller.findAll();
+      const result = await controller.findAll('INTERN');
       expect(result).toEqual([mockEmployee]);
       expect(mockEmployeesService.findAll).toHaveBeenCalledWith(undefined);
     });
